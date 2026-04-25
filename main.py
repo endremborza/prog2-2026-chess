@@ -131,25 +131,29 @@ class GameIndex:
     RES_BLACK = 2
 
     def build(self) -> None:
+        # Minimal columns: drop "date" (use utcdate), "tournamentid" (scanned separately)
+        # Use int16 for wstarts/bstarts/welos/belos to save memory
         needed = [
-            "game_id", "result", "variant", "date", "utcdate", "utctime",
+            "game_id", "result", "variant", "utcdate", "utctime",
             "termination", "timecontrol", "whitestart", "blackstart",
-            "tournamentid", "eco", "whiteelo", "blackelo",
+            "eco", "whiteelo", "blackelo", "white", "black",
         ]
         gid_parts: list[np.ndarray] = []
         res_parts: list[np.ndarray] = []
         std_parts: list[np.ndarray] = []
-        date_parts: list[np.ndarray] = []
         utcdate_parts: list[np.ndarray] = []
         utctime_parts: list[np.ndarray] = []
         term_parts: list[np.ndarray] = []
         tcbase_parts: list[np.ndarray] = []
         ws_parts: list[np.ndarray] = []
         bs_parts: list[np.ndarray] = []
-        tourn_parts: list[np.ndarray] = []
         eco_parts: list[np.ndarray] = []
         welo_parts: list[np.ndarray] = []
         belo_parts: list[np.ndarray] = []
+        # Player name indices
+        player_dict: dict[str, int] = {}   # name → int id
+        widx_parts: list[np.ndarray] = []
+        bidx_parts: list[np.ndarray] = []
 
         _res_map = {"1-0": self.RES_WHITE, "0-1": self.RES_BLACK, "1/2-1/2": self.RES_DRAW}
         _term_map = {"Normal": self.TERM_NORMAL, "Time forfeit": self.TERM_TIMEFORFEIT,
@@ -167,24 +171,30 @@ class GameIndex:
                                             .astype(np.int8).to_numpy())
             std_parts.append((chunk["variant"].str.strip().str.lower() == "standard")
                              .to_numpy())
-            date_parts.append(chunk["date"].fillna("").to_numpy().astype("S10"))
             utcdate_parts.append(chunk["utcdate"].fillna("").to_numpy().astype("S10"))
-
-            # utctime as seconds from midnight
-            def _tc_secs(series):
-                return series.fillna("0:00:00").apply(parse_clock).astype(np.int32)
-
-            utctime_parts.append(_tc_secs(chunk["utctime"]).to_numpy())
+            utctime_parts.append(chunk["utctime"].fillna("0:00:00").apply(parse_clock)
+                                                 .astype(np.int32).to_numpy())
             term_parts.append(chunk["termination"].map(_term_map).fillna(self.TERM_OTHER)
                                                   .astype(np.int8).to_numpy())
             tcbase_parts.append(chunk["timecontrol"].apply(lambda x: parse_tc(x)[0])
-                                                    .astype(np.int32).to_numpy())
-            ws_parts.append(chunk["whitestart"].apply(parse_clock).astype(np.int32).to_numpy())
-            bs_parts.append(chunk["blackstart"].apply(parse_clock).astype(np.int32).to_numpy())
-            tourn_parts.append(chunk["tournamentid"].fillna("").to_numpy().astype("S8"))
+                                                    .astype(np.int16).to_numpy())
+            ws_parts.append(chunk["whitestart"].apply(parse_clock).clip(-1, 32767)
+                                               .astype(np.int16).to_numpy())
+            bs_parts.append(chunk["blackstart"].apply(parse_clock).clip(-1, 32767)
+                                               .astype(np.int16).to_numpy())
             eco_parts.append(chunk["eco"].fillna("").to_numpy().astype("S3"))
-            welo_parts.append(chunk["whiteelo"].fillna(0).astype(np.int32).to_numpy())
-            belo_parts.append(chunk["blackelo"].fillna(0).astype(np.int32).to_numpy())
+            welo_parts.append(chunk["whiteelo"].fillna(0).clip(0, 32767)
+                                               .astype(np.int16).to_numpy())
+            belo_parts.append(chunk["blackelo"].fillna(0).clip(0, 32767)
+                                               .astype(np.int16).to_numpy())
+            # Player indices (vectorized via Series.map for speed)
+            w_names = chunk["white"].fillna("").astype(str)
+            b_names = chunk["black"].fillna("").astype(str)
+            for p in pd.concat([w_names, b_names]).unique():
+                if p not in player_dict:
+                    player_dict[p] = len(player_dict)
+            widx_parts.append(w_names.map(player_dict).astype(np.int32).to_numpy())
+            bidx_parts.append(b_names.map(player_dict).astype(np.int32).to_numpy())
 
         print(f"  Concatenating {total:,} games...")
         gids_raw = np.concatenate(gid_parts); del gid_parts
@@ -197,18 +207,23 @@ class GameIndex:
 
         self.results = _sort(res_parts)
         self.is_std = _sort(std_parts)
-        self.dates = _sort(date_parts)
         self.utcdates = _sort(utcdate_parts)
         self.utctimes = _sort(utctime_parts)
         self.terms = _sort(term_parts)
         self.tcbases = _sort(tcbase_parts)
         self.wstarts = _sort(ws_parts)
         self.bstarts = _sort(bs_parts)
-        self.tourns = _sort(tourn_parts)
-        self.ecos = _sort(eco_parts)
-        self.welos = _sort(welo_parts)
-        self.belos = _sort(belo_parts)
-        del order
+        self.ecos    = _sort(eco_parts)
+        self.welos  = _sort(welo_parts)
+        self.belos  = _sort(belo_parts)
+        self.widxs  = _sort(widx_parts)
+        self.bidxs  = _sort(bidx_parts)
+        # Alias: dates = utcdates (UTC date used as proxy for local date)
+        self.dates  = self.utcdates
+        # Build player names array (indexed by player_dict values)
+        names = sorted(player_dict, key=player_dict.get)
+        self.player_names: np.ndarray = np.array(names, dtype="U40")
+        del player_dict, names, order
         print(f"  GameIndex ready: {len(self.gids):,} games, "
               f"~{self.gids.nbytes//1024//1024 + self.results.nbytes//1024//1024 + self.dates.nbytes//1024//1024 + self.tcbases.nbytes//1024//1024*10} MB")
 
@@ -290,6 +305,11 @@ class GameIndex:
                 pass
         return result
 
+    def player_at(self, i: int, color: str) -> str:
+        """Return white or black player name for game at sorted index i."""
+        pid = int(self.widxs[i]) if color == "white" else int(self.bidxs[i])
+        return str(self.player_names[pid])
+
     def get_at(self, i: int) -> dict:
         return {
             "game_id": self.gids[i].decode(),
@@ -302,7 +322,6 @@ class GameIndex:
             "tcbase": int(self.tcbases[i]),
             "wstart": int(self.wstarts[i]),
             "bstart": int(self.bstarts[i]),
-            "tourn": self.tourns[i].decode(),
             "eco": self.ecos[i].decode(),
             "welo": int(self.welos[i]),
             "belo": int(self.belos[i]),
@@ -542,17 +561,15 @@ def q6_threefold_range(gi: GameIndex) -> int:
 
 def q7_queens_at_mate(gi: GameIndex) -> float:
     tours = pd.read_csv(TOURNAMENTS, usecols=["id", "winner__id"]).dropna()
-    tour_winner = {row["id"]: str(row["winner__id"]).lower() for _, row in tours.iterrows()}
-
-    # Find games where tournament winner won by Normal termination
-    mask = (gi.terms == gi.TERM_NORMAL) & (gi.results != gi.RES_DRAW)
-    gids_norm = gi.game_ids_where(mask)
-    tourn_norm = {gi.gids[i].decode(): gi.tourns[i].decode() for i in np.where(mask)[0]}
+    tour_winner = {str(row["id"]): str(row["winner__id"]).lower() for _, row in tours.iterrows()}
 
     winner_games: set[str] = set()
-    for chunk in pd.read_csv(GAMES, usecols=["game_id", "white", "black", "result", "tournamentid"],
+    for chunk in pd.read_csv(GAMES,
+                              usecols=["game_id", "white", "black", "result",
+                                       "tournamentid", "termination"],
                               chunksize=CHUNKSIZE):
-        sub = chunk[chunk["game_id"].isin(gids_norm)]
+        sub = chunk[(chunk["termination"] == "Normal") &
+                    (chunk["result"] != "1/2-1/2")]
         for _, row in sub.iterrows():
             w = tour_winner.get(str(row["tournamentid"]))
             if not w:
@@ -592,17 +609,17 @@ def q8_draw_march20_promo(gi: GameIndex) -> int:
 # ============================================================
 
 def q9_berserk_timeouts(gi: GameIndex) -> tuple[list[str], int]:
-    tf_mask = gi.terms == gi.TERM_TIMEFORFEIT
     counts: Counter = Counter()
     for chunk in pd.read_csv(GAMES,
-                              usecols=["game_id", "result", "white", "black",
+                              usecols=["result", "white", "black", "termination",
                                        "timecontrol", "whitestart", "blackstart"],
                               chunksize=CHUNKSIZE):
-        chunk = chunk[chunk["game_id"].isin(gi.game_ids_where(tf_mask))]
-        chunk["tc_b"] = chunk["timecontrol"].apply(lambda x: parse_tc(x)[0])
-        chunk["ws"] = chunk["whitestart"].apply(parse_clock)
-        chunk["bs"] = chunk["blackstart"].apply(parse_clock)
-        for _, row in chunk.iterrows():
+        sub = chunk[chunk["termination"] == "Time forfeit"]
+        sub = sub.copy()
+        sub["tc_b"] = sub["timecontrol"].apply(lambda x: parse_tc(x)[0])
+        sub["ws"] = sub["whitestart"].apply(parse_clock)
+        sub["bs"] = sub["blackstart"].apply(parse_clock)
+        for _, row in sub.iterrows():
             tc = row["tc_b"]
             if tc <= 0:
                 continue
@@ -622,58 +639,93 @@ def q9_berserk_timeouts(gi: GameIndex) -> tuple[list[str], int]:
 # ============================================================
 
 def q10_logit_game(gi: GameIndex) -> dict:
-    print("  Q10: collecting per-game features")
-    rows = []
-    done = 0
-    gids_sorted = gi.gids
-    res_arr = gi.results
-    wstart_arr = gi.wstarts
-    bstart_arr = gi.bstarts
-    tcbase_arr = gi.tcbases
+    """Two-pass: compute feature statistics, then fit with SGD (memory-efficient)."""
+    print("  Q10: collecting per-game features (SGD, two-pass)")
+    gids_s = gi.gids
+    res_a = gi.results
+    ws_a, bs_a = gi.wstarts, gi.bstarts
 
+    # Pass 1: running mean/variance via Welford's algorithm
+    n = 0
+    M = np.zeros(3, dtype=np.float64)  # means
+    S = np.zeros(3, dtype=np.float64)  # sum of squared deviations (for variance)
+
+    def _update_welford(x: np.ndarray):
+        nonlocal n, M, S
+        n += 1
+        delta = x - M
+        M += delta / n
+        delta2 = x - M
+        S += delta * delta2
+
+    done = 0
     for gid, _, mdf in stream_games():
         done += 1
-        if done % 500_000 == 0:
-            print(f"    Q10 {done:,}")
-        idx = np.searchsorted(gids_sorted, np.array([gid], dtype="S14")[0])
-        if idx >= len(gids_sorted) or gids_sorted[idx].decode() != gid:
+        idx = np.searchsorted(gids_s, np.array([gid], dtype="S14")[0])
+        if idx >= len(gids_s) or gids_s[idx].decode() != gid:
             continue
-        r = int(res_arr[idx])
+        r = int(res_a[idx])
         if r == GameIndex.RES_DRAW:
             continue
-        inc = parse_tc(str(tcbase_arr[idx]))[1] if False else 0  # inc not stored separately; use 0 approx
-        ws, bs = int(wstart_arr[idx]), int(bstart_arr[idx])
-
+        ws, bs = int(ws_a[idx]), int(bs_a[idx])
         wcap = bcap = 0
-        wt = bt = 0.0
-        wn = bn = 0
-        pw, pb = ws, bs
+        wt = bt = 0.0; wn = bn = 0; pw, pb = ws, bs
         for _, row in mdf.iterrows():
-            clk = parse_clock(row["clock"])
-            c = row["color"]
+            clk = parse_clock(row["clock"]); c = row["color"]
             if "x" in str(row["move"]):
-                if c == "white":
-                    wcap += 1
-                else:
-                    bcap += 1
+                if c == "white": wcap += 1
+                else: bcap += 1
             if c == "white" and pw > 0 and clk >= 0:
                 wt += pw - clk; wn += 1; pw = clk
             elif c == "black" and pb > 0 and clk >= 0:
                 bt += pb - clk; bn += 1; pb = clk
+        _update_welford(np.array([wcap, 1, wt / wn if wn else 0]))
+        _update_welford(np.array([bcap, 0, bt / bn if bn else 0]))
 
-        rows.append((wcap, 1, wt / wn if wn else 0, 1 if r == GameIndex.RES_WHITE else 0))
-        rows.append((bcap, 0, bt / bn if bn else 0, 1 if r == GameIndex.RES_BLACK else 0))
+    mu = M.copy()
+    sd = np.sqrt(S / n) if n > 1 else np.ones(3)
+    sd[sd == 0] = 1
 
-    print(f"  Q10: fitting on {len(rows):,} rows")
-    X = np.array([[a, b, c] for a, b, c, _ in rows], dtype=float)
-    y = np.array([d for *_, d in rows])
-    mu, sd = X.mean(0), X.std(0); sd[sd == 0] = 1
-    m = LogisticRegression(max_iter=1000, solver="lbfgs")
-    m.fit((X - mu) / sd, y)
-    return {"intercept": float(m.intercept_[0]),
-            "coef_captures": float(m.coef_[0][0]),
-            "coef_color_white": float(m.coef_[0][1]),
-            "coef_avg_time": float(m.coef_[0][2]),
+    print(f"  Q10: pass 2 fitting SGD (n_samples={n:,})")
+    sgd = SGDClassifier(loss="log_loss", random_state=42)
+    fitted = False
+    bX: list = []; by: list = []; BATCH = 200_000
+
+    for gid, _, mdf in stream_games():
+        idx = np.searchsorted(gids_s, np.array([gid], dtype="S14")[0])
+        if idx >= len(gids_s) or gids_s[idx].decode() != gid:
+            continue
+        r = int(res_a[idx])
+        if r == GameIndex.RES_DRAW:
+            continue
+        ws, bs = int(ws_a[idx]), int(bs_a[idx])
+        wcap = bcap = 0; wt = bt = 0.0; wn = bn = 0; pw, pb = ws, bs
+        for _, row in mdf.iterrows():
+            clk = parse_clock(row["clock"]); c = row["color"]
+            if "x" in str(row["move"]):
+                if c == "white": wcap += 1
+                else: bcap += 1
+            if c == "white" and pw > 0 and clk >= 0:
+                wt += pw - clk; wn += 1; pw = clk
+            elif c == "black" and pb > 0 and clk >= 0:
+                bt += pb - clk; bn += 1; pb = clk
+        bX.extend([[(wcap-mu[0])/sd[0], (1-mu[1])/sd[1], (wt/wn-mu[2] if wn else -mu[2]/sd[2])],
+                    [(bcap-mu[0])/sd[0], (0-mu[1])/sd[1], (bt/bn-mu[2] if bn else -mu[2]/sd[2])]])
+        by.extend([1 if r == GameIndex.RES_WHITE else 0, 1 if r == GameIndex.RES_BLACK else 0])
+        if len(bX) >= BATCH:
+            Xa = np.array(bX, dtype=np.float32); ya = np.array(by, dtype=np.int32)
+            if not fitted: sgd.partial_fit(Xa, ya, classes=[0, 1]); fitted = True
+            else: sgd.partial_fit(Xa, ya)
+            bX = []; by = []
+    if bX:
+        Xa = np.array(bX, dtype=np.float32); ya = np.array(by, dtype=np.int32)
+        if not fitted: sgd.partial_fit(Xa, ya, classes=[0, 1])
+        else: sgd.partial_fit(Xa, ya)
+
+    return {"intercept": float(sgd.intercept_[0]),
+            "coef_captures": float(sgd.coef_[0][0]),
+            "coef_color_white": float(sgd.coef_[0][1]),
+            "coef_avg_time": float(sgd.coef_[0][2]),
             "means": mu.tolist(), "stds": sd.tolist()}
 
 
@@ -687,15 +739,16 @@ def q11_resignations(gi: GameIndex) -> tuple:
     res_map = {gi.gids[i].decode(): int(gi.results[i]) for i in np.where(mask)[0]}
     w_map: dict[str, str] = {}
     b_map: dict[str, str] = {}
-    all_players: set[str] = set()
+    # Get all unique player names from GameIndex player_names array
+    all_players: set[str] = set(gi.player_names.tolist())
+    # Get white/black for the relevant games
     for chunk in pd.read_csv(GAMES, usecols=["game_id", "white", "black"], chunksize=CHUNKSIZE):
-        all_players.update(chunk["white"].dropna())
-        all_players.update(chunk["black"].dropna())
         sub = chunk[chunk["game_id"].isin(gids)]
         w_map.update(zip(sub["game_id"], sub["white"]))
         b_map.update(zip(sub["game_id"], sub["black"]))
 
-    print(f"  Q11: checking {len(gids):,} decisive Normal games")
+    print(f"  Q11: checking {len(gids):,} decisive Normal games, "
+          f"{len(all_players):,} unique players")
     resign: Counter = Counter()
     done = 0
     for gid, ml, _ in stream_games(gids):
@@ -703,7 +756,7 @@ def q11_resignations(gi: GameIndex) -> tuple:
         if done % 100_000 == 0:
             print(f"    Q11 {done:,}/{len(gids):,}")
         if ml and "#" in ml[-1]:
-            continue  # checkmate
+            continue  # checkmate, not resignation
         r = res_map.get(gid, -1)
         if r == GameIndex.RES_WHITE:
             resign[b_map.get(gid, "")] += 1
@@ -723,8 +776,8 @@ def q11_resignations(gi: GameIndex) -> tuple:
 # Q12: Largest cyclic win within a calendar year (standard, CET)
 # ============================================================
 
-def _longest_cycle(graph: dict[str, set]) -> list[str]:
-    best: list[str] = []
+def _longest_cycle(graph: dict[int, set]) -> list[int]:
+    best: list[int] = []
     def dfs(start, cur, path, vis):
         nonlocal best
         for nb in graph.get(cur, set()):
@@ -735,52 +788,94 @@ def _longest_cycle(graph: dict[str, set]) -> list[str]:
                 vis.add(nb); path.append(nb)
                 dfs(start, nb, path, vis)
                 path.pop(); vis.remove(nb)
-    for n in list(graph):
-        dfs(n, n, [n], {n})
+    for node in list(graph):
+        dfs(node, node, [node], {node})
     return best
 
 
 def q12_cyclic_win(gi: GameIndex) -> tuple:
+    """Build win graphs using integer player IDs; avoid large timestamp dicts."""
+    name_to_id = {name: i for i, name in enumerate(gi.player_names)}
+
     mask = gi.is_std & (gi.results != gi.RES_DRAW)
-    gids = gi.game_ids_where(mask)
-    # Build year→graph from games file (needs player names)
-    from collections import defaultdict
-    year_graph: dict[int, dict[str, set]] = defaultdict(lambda: defaultdict(set))
-    year_edge_ts: dict[int, dict[tuple, str]] = defaultdict(dict)
+    print(f"  Q12: processing {mask.sum():,} standard decisive games")
 
-    print(f"  Q12: processing {len(gids):,} standard decisive games")
-    for chunk in pd.read_csv(GAMES,
-                              usecols=["game_id", "white", "black", "result", "utcdate", "utctime"],
-                              chunksize=CHUNKSIZE):
-        sub = chunk[chunk["game_id"].isin(gids)]
-        for _, row in sub.iterrows():
-            dt = game_start_cet(str(row["utcdate"]), str(row["utctime"]))
-            if dt is None:
-                continue
-            yr = dt.year
-            w, b = str(row["white"]), str(row["black"])
-            winner, loser = (w, b) if row["result"] == "1-0" else (b, w)
-            year_graph[yr][winner].add(loser)
-            key = (winner, loser)
-            ts = f"{row['utcdate']} {row['utctime']}"
-            if key not in year_edge_ts[yr] or ts < year_edge_ts[yr][key]:
-                year_edge_ts[yr][key] = ts
+    # Build year→graph using player IDs (int32) for memory efficiency
+    year_graph: dict[int, dict[int, set]] = defaultdict(lambda: defaultdict(set))
 
-    best: list[str] = []
+    std_dec_idx = np.where(mask)[0]
+    udates = gi.utcdates[std_dec_idx]    # S10 "YYYY.MM.DD"
+    utimes = gi.utctimes[std_dec_idx]    # int32 seconds from midnight
+    results_sub = gi.results[std_dec_idx]
+    widxs_sub = gi.widxs[std_dec_idx]
+    bidxs_sub = gi.bidxs[std_dec_idx]
+
+    # Vectorized UTC year extraction from S10 bytes "YYYY.MM.DD"
+    # First 4 bytes are year ASCII digits
+    year_bytes = udates.view("u1").reshape(-1, 10)[:, :4]  # shape (n, 4)
+    utc_years = (
+        (year_bytes[:, 0].astype(np.int16) - 48) * 1000 +
+        (year_bytes[:, 1].astype(np.int16) - 48) * 100 +
+        (year_bytes[:, 2].astype(np.int16) - 48) * 10 +
+        (year_bytes[:, 3].astype(np.int16) - 48)
+    )
+    # Adjust UTC→CET: if utctime + 3600 >= 86400 and date is Dec 31, year += 1
+    # (simplified: only matters at midnight transitions, very rare for Q12)
+    # For correctness, adjust only Dec 31 late-night games
+    date_bytes = udates.view("u1").reshape(-1, 10)
+    is_dec31 = (date_bytes[:, 5] == ord('1')) & (date_bytes[:, 6] == ord('2')) & \
+               (date_bytes[:, 8] == ord('3')) & (date_bytes[:, 9] == ord('1'))
+    cet_years = utc_years.copy()
+    cet_years[(is_dec31) & (utimes >= 82800)] += 1  # 82800 = 23*3600, after 23:00 UTC = +1 in CET
+
+    for j in range(len(std_dec_idx)):
+        yr = int(cet_years[j])
+        r = int(results_sub[j])
+        wid = int(widxs_sub[j]); bid = int(bidxs_sub[j])
+        winner, loser = (wid, bid) if r == GameIndex.RES_WHITE else (bid, wid)
+        year_graph[yr][winner].add(loser)
+
+    best_ids: list[int] = []
     best_yr = None
     for yr, g in year_graph.items():
         c = _longest_cycle(g)
-        if len(c) > len(best):
-            best, best_yr = c, yr
+        if len(c) > len(best_ids):
+            best_ids = c; best_yr = yr
 
-    if not best:
+    if not best_ids:
         return None, []
 
+    # Convert player IDs back to names
+    best = [str(gi.player_names[pid]) for pid in best_ids]
+
+    # Find first game in cycle (scan games file for cycle players in best_yr)
+    cycle_set = set(best)
     n = len(best)
-    edges = [(best[i], best[(i+1)%n]) for i in range(n)]
-    ts_map = year_edge_ts[best_yr]
-    earliest = min(edges, key=lambda e: ts_map.get(e, "9999"))
-    si = edges.index(earliest)
+    first_ts = "9999"
+    first_winner = best[0]
+    for chunk in pd.read_csv(GAMES,
+                              usecols=["white", "black", "result", "utcdate", "utctime", "variant"],
+                              chunksize=CHUNKSIZE):
+        sub = chunk[
+            (chunk["variant"] == "Standard") &
+            chunk["white"].isin(cycle_set) & chunk["black"].isin(cycle_set)
+        ]
+        for _, row in sub.iterrows():
+            w, b = str(row["white"]), str(row["black"])
+            if row["result"] == "1-0":
+                winner, loser = w, b
+            else:
+                winner, loser = b, w
+            # Check if this is a cycle edge
+            if winner in cycle_set and loser == best[(best.index(winner) + 1) % n]:
+                dt = game_start_cet(str(row["utcdate"]), str(row["utctime"]))
+                if dt and dt.year == best_yr:
+                    ts = f"{row['utcdate']} {row['utctime']}"
+                    if ts < first_ts:
+                        first_ts = ts
+                        first_winner = winner
+
+    si = best.index(first_winner)
     return best_yr, best[si:] + best[:si]
 
 
@@ -896,42 +991,126 @@ def q15_non_queen_promos() -> tuple[int, list]:
 
 
 # ============================================================
+# Q16/Q18 helpers: per-player streak computation from GameIndex
+# ============================================================
+
+def _build_player_sorted_games(gi: GameIndex) -> tuple:
+    """Return sorted (pids, is_draw, utcdates, utctimes, elos) for std games.
+
+    Sorted by (player_id, utcdate, utctime).  White and black records
+    are combined: one entry per (player, game) pair.
+    Peak memory: ~3.5 GB during build; retained ~2.4 GB sorted arrays.
+    """
+    import gc
+    std = gi.is_std
+    n = std.sum()
+    idx = np.where(std)[0]
+
+    # White player records
+    w_pids = gi.widxs[idx]          # int32
+    w_draw = gi.results[idx] == GameIndex.RES_DRAW
+    w_wd   = gi.widxs[idx] != gi.bidxs[idx]  # unused, just placeholders
+    w_dates = gi.utcdates[idx]       # S10
+    w_times = gi.utctimes[idx]       # int32
+    w_elos  = gi.welos[idx]          # int32
+    w_wins  = gi.results[idx] == GameIndex.RES_WHITE   # white won?
+
+    # Black player records
+    b_pids  = gi.bidxs[idx]
+    b_draw  = gi.results[idx] == GameIndex.RES_DRAW
+    b_dates = gi.utcdates[idx]
+    b_times = gi.utctimes[idx]
+    b_elos  = gi.belos[idx]
+    b_wins  = gi.results[idx] == GameIndex.RES_BLACK
+
+    del idx; gc.collect()
+
+    # Combine
+    all_pids  = np.concatenate([w_pids,  b_pids])
+    all_draw  = np.concatenate([w_draw,  b_draw])
+    all_dates = np.concatenate([w_dates, b_dates])
+    all_times = np.concatenate([w_times, b_times])
+    all_elos  = np.concatenate([w_elos,  b_elos])
+    all_wins  = np.concatenate([w_wins,  b_wins])
+    del w_pids, b_pids, w_draw, b_draw, w_dates, b_dates
+    del w_times, b_times, w_elos, b_elos, w_wins, b_wins; gc.collect()
+
+    # Sort by (player_id, date, time)
+    order = np.lexsort((all_times, all_dates, all_pids))
+    all_pids  = all_pids[order];  all_draw  = all_draw[order]
+    all_dates = all_dates[order]; all_times = all_times[order]
+    all_elos  = all_elos[order];  all_wins  = all_wins[order]
+    del order; gc.collect()
+
+    return all_pids, all_draw, all_wins, all_dates, all_times, all_elos
+
+
+def _compute_streaks(pids, cond, dates, times, elos, gi,
+                     tiebreak_elo=True) -> tuple:
+    """Compute best streak where cond[i] is True, grouping by player.
+
+    Returns (best_pid, best_start_date_bytes, best_end_date_bytes, best_n, best_elo,
+             all_tied_pids) where all_tied_pids is a list of (pid, start_b, end_b, n, elo)
+             for all players reaching best_n.
+    """
+    best_n = 0; best_pid = -1; best_s = b""; best_e = b""; best_elo = 0
+    all_tied: list = []
+
+    boundaries = np.concatenate([[0], np.where(np.diff(pids))[0] + 1, [len(pids)]])
+    for k in range(len(boundaries) - 1):
+        s, e = int(boundaries[k]), int(boundaries[k+1])
+        pid = int(pids[s])
+        pc, pd_, pe = cond[s:e], dates[s:e], elos[s:e]
+
+        st = 0; ss_idx = 0; ss_elo = 0
+        for j in range(e - s):
+            if pc[j]:
+                if st == 0: ss_idx = j
+                st += 1
+                ss_elo = int(pe[j]) if pe[j] > 0 else ss_elo
+            else:
+                if st > 0:
+                    # Update candidate
+                    if st > best_n:
+                        best_n = st; all_tied = [(pid, pd_[ss_idx], pd_[j-1 if j>0 else 0], st, ss_elo)]
+                        if tiebreak_elo:
+                            best_pid = pid; best_s = pd_[ss_idx]; best_e = pd_[j-1 if j>0 else 0]; best_elo = ss_elo
+                        else:
+                            best_pid = pid; best_s = pd_[ss_idx]; best_e = pd_[j-1 if j>0 else 0]
+                    elif st == best_n:
+                        all_tied.append((pid, pd_[ss_idx], pd_[j-1 if j>0 else 0], st, ss_elo))
+                        if tiebreak_elo and ss_elo > best_elo:
+                            best_pid = pid; best_s = pd_[ss_idx]; best_e = pd_[j-1 if j>0 else 0]; best_elo = ss_elo
+                st = 0
+        if st > 0:  # ongoing streak at end
+            j = e - s - 1
+            if st > best_n:
+                best_n = st; all_tied = [(pid, pd_[ss_idx], pd_[j], st, ss_elo)]
+                best_pid = pid; best_s = pd_[ss_idx]; best_e = pd_[j]; best_elo = ss_elo
+            elif st == best_n:
+                all_tied.append((pid, pd_[ss_idx], pd_[j], st, ss_elo))
+                if tiebreak_elo and ss_elo > best_elo:
+                    best_pid = pid; best_s = pd_[ss_idx]; best_e = pd_[j]; best_elo = ss_elo
+
+    return best_pid, best_s, best_e, best_n, best_elo, all_tied
+
+
+# ============================================================
 # Q16: Longest draw streak (standard)
 # ============================================================
 
 def q16_draw_streak(gi: GameIndex) -> tuple:
-    mask = gi.is_std
-    std_gids = gi.game_ids_where(mask)
-    player_games: dict[str, list] = defaultdict(list)
-    for chunk in pd.read_csv(GAMES,
-                              usecols=["game_id", "white", "black", "result",
-                                       "utcdate", "utctime", "whiteelo", "blackelo"],
-                              chunksize=CHUNKSIZE):
-        sub = chunk[chunk["game_id"].isin(std_gids)]
-        for _, row in sub.iterrows():
-            ts = f"{row['utcdate']} {row['utctime']}"
-            w, b = str(row["white"]), str(row["black"])
-            res = row["result"]
-            player_games[w].append((ts, res, row.get("whiteelo") or 0))
-            player_games[b].append((ts, res, row.get("blackelo") or 0))
-
-    best_n = best_elo = 0
-    best_p = best_s = best_e = None
-    for p, gl in player_games.items():
-        gl.sort()
-        st = 0; ss = se = None; se_elo = 0
-        for ts, res, elo in gl:
-            if res == "1/2-1/2":
-                if st == 0: ss = ts
-                st += 1; se_elo = elo or se_elo
-            else:
-                st = 0
-            if st > best_n or (st == best_n and st > 0 and (se_elo or 0) > best_elo):
-                best_n = st; best_p = p; best_s = ss; best_e = ts; best_elo = se_elo or 0
-        if st > 0:
-            if st > best_n or (st == best_n and (se_elo or 0) > best_elo):
-                best_n = st; best_p = p; best_s = ss; best_e = gl[-1][0]; best_elo = se_elo or 0
-    return best_p, best_s, best_e, best_n
+    print("  Q16: building per-player sorted games from GameIndex")
+    pids, is_draw, _, dates, times, elos = _build_player_sorted_games(gi)
+    best_pid, best_s, best_e, best_n, _, _ = _compute_streaks(
+        pids, is_draw, dates, times, elos, gi, tiebreak_elo=True)
+    import gc; del pids, is_draw, dates, times, elos; gc.collect()
+    if best_pid < 0:
+        return None, None, None, 0
+    p = str(gi.player_names[best_pid])
+    s = best_s.decode() if isinstance(best_s, bytes) else str(best_s)
+    e = best_e.decode() if isinstance(best_e, bytes) else str(best_e)
+    return p, s, e, best_n
 
 
 # ============================================================
@@ -986,44 +1165,31 @@ def q17_logit_move(gi: GameIndex) -> dict:
 # ============================================================
 
 def q18_winless_streak(gi: GameIndex) -> tuple:
-    mask = gi.is_std
-    std_gids = gi.game_ids_where(mask)
-    player_games: dict[str, list] = defaultdict(list)
-    for chunk in pd.read_csv(GAMES,
-                              usecols=["game_id", "white", "black", "result",
-                                       "utcdate", "utctime"],
-                              chunksize=CHUNKSIZE):
-        sub = chunk[chunk["game_id"].isin(std_gids)]
-        for _, row in sub.iterrows():
-            ts = f"{row['utcdate']} {row['utctime']}"
-            w, b = str(row["white"]), str(row["black"])
-            res = row["result"]
-            player_games[w].append((ts, "w" if res == "1-0" else "n"))
-            player_games[b].append((ts, "w" if res == "0-1" else "n"))
+    print("  Q18: building per-player sorted games from GameIndex")
+    pids, is_draw, is_win, dates, times, elos = _build_player_sorted_games(gi)
+    is_winless = ~is_win
+    import gc; del is_win, is_draw, elos; gc.collect()
 
-    player_max: dict[str, tuple] = {}
-    for p, gl in player_games.items():
-        gl.sort()
-        best = cur = 0; ss = bs = be = None
-        for ts, o in gl:
-            if o == "n":
-                if cur == 0: ss = ts
-                cur += 1
-                if cur > best: best = cur; bs = ss; be = ts
-            else:
-                cur = 0
-        if cur > best: best = cur; bs = ss; be = gl[-1][0] if gl else None
-        player_max[p] = (best, bs, be)
+    _, _, _, best_n, _, all_tied = _compute_streaks(
+        pids, is_winless, dates, times, np.zeros(len(pids), dtype=np.int32), gi,
+        tiebreak_elo=False)
+    del pids, is_winless, dates, times; gc.collect()
 
-    if not player_max:
+    if best_n == 0:
         return None, None, None, 0
-    top = max(v[0] for v in player_max.values())
-    tied = [p for p, v in player_max.items() if v[0] == top]
+
+    # Tiebreak: Hungarian alphabet order after "Lili"
     lk = hu_key("Lili")
-    after = [p for p in tied if hu_key(p) > lk]
-    winner = min(after, key=hu_key) if after else min(tied, key=hu_key)
-    _, bs, be = player_max[winner]
-    return winner, bs, be, top
+    tied_named = [(str(gi.player_names[pid]), s, e) for pid, s, e, n, _ in all_tied]
+    after = [(p, s, e) for p, s, e in tied_named if hu_key(p) > lk]
+    if after:
+        winner_p, winner_s, winner_e = min(after, key=lambda x: hu_key(x[0]))
+    else:
+        winner_p, winner_s, winner_e = min(tied_named, key=lambda x: hu_key(x[0]))
+
+    s = winner_s.decode() if isinstance(winner_s, bytes) else str(winner_s)
+    e = winner_e.decode() if isinstance(winner_e, bytes) else str(winner_e)
+    return winner_p, s, e, best_n
 
 
 # ============================================================
@@ -1048,17 +1214,14 @@ def q19_fifty_move(gi: GameIndex) -> int:
 # ============================================================
 
 def q20_queens_gambit(gi: GameIndex) -> dict[int, float]:
-    # Filter standard games in date range broadly (then refine by CET)
-    mask = gi.is_std
-    gids_std = gi.game_ids_where(mask)
-
+    # No pre-filter to avoid large game_id set; check is_std inline
     yr_total: Counter = Counter()
     yr_qg: Counter = Counter()
 
-    print(f"  Q20: checking {len(gids_std):,} standard games")
-    for gid, ml, _ in stream_games(gids_std):
-        idx = np.searchsorted(gi.gids, np.array([gid], dtype="S14")[0])
-        if idx >= len(gi.gids) or gi.gids[idx].decode() != gid:
+    print(f"  Q20: scanning all moves, checking standard games in date range")
+    for gid, ml, _ in stream_games():  # no filter = all games
+        idx = gi._idx(gid)
+        if idx < 0 or not gi.is_std[idx]:
             continue
         ud = gi.utcdates[idx].decode()
         ut = int(gi.utctimes[idx])
@@ -1209,25 +1372,26 @@ def _sim_rects(ml: list[str]) -> tuple[int, int, int]:
 
 
 def q22_rectangles(gi: GameIndex) -> tuple:
-    print("  Q22: rectangle paths (slow — all games)")
+    print("  Q22: rectangle paths (slow — all games, single pass)")
     gids_s = gi.gids
     player_rects: Counter = Counter()
     global_max = 0
     done = 0
-
-    for chunk in pd.read_csv(GAMES, usecols=["game_id", "white", "black"], chunksize=CHUNKSIZE):
-        white_map = dict(zip(chunk["game_id"], chunk["white"]))
-        black_map = dict(zip(chunk["game_id"], chunk["black"]))
-        gids_in_chunk = set(chunk["game_id"])
-
-        for gid, ml, _ in stream_games(gids_in_chunk):
-            done += 1
-            if done % 200_000 == 0:
-                print(f"    Q22 {done:,}")
-            wr, br, area = _sim_rects(ml)
-            player_rects[white_map.get(gid, "")] += wr
-            player_rects[black_map.get(gid, "")] += br
-            global_max = max(global_max, area)
+    for gid, ml, _ in stream_games():
+        done += 1
+        if done % 200_000 == 0:
+            print(f"    Q22 {done:,}")
+        wr, br, area = _sim_rects(ml)
+        # Look up player names from GameIndex
+        idx = np.searchsorted(gids_s, np.array([gid], dtype="S14")[0])
+        if idx < len(gids_s) and gids_s[idx].decode() == gid:
+            w = gi.player_at(idx, "white")
+            b = gi.player_at(idx, "black")
+        else:
+            w = b = ""
+        player_rects[w] += wr
+        player_rects[b] += br
+        global_max = max(global_max, area)
 
     if not player_rects:
         return None, 0, 0
@@ -1240,20 +1404,23 @@ def q22_rectangles(gi: GameIndex) -> tuple:
 # Q23: Castling checkmates
 # ============================================================
 
-def q23_castle_mates() -> list[str]:
-    print("  Q23: scanning castling checkmates")
+def q23_castle_mates(gi: GameIndex) -> list[str]:
+    print("  Q23: scanning castling checkmates (single pass)")
+    # Single moves scan: collect (game_id, color) for castling checkmates
+    castle_games: dict[str, str] = {}
+    for chunk in pd.read_csv(MOVES, usecols=["game_id", "move", "color"], chunksize=CHUNKSIZE):
+        sub = chunk[chunk["move"].isin(["O-O#", "O-O-O#"])]
+        for _, row in sub.iterrows():
+            castle_games[str(row["game_id"])] = str(row["color"])
+
+    print(f"  Q23: {len(castle_games):,} castling checkmates found")
     counts: Counter = Counter()
-    for chunk in pd.read_csv(GAMES, usecols=["game_id", "white", "black"], chunksize=CHUNKSIZE):
-        wm = dict(zip(chunk["game_id"], chunk["white"]))
-        bm = dict(zip(chunk["game_id"], chunk["black"]))
-        gids_in = set(chunk["game_id"])
-        for mchunk in pd.read_csv(MOVES, usecols=["game_id", "move", "color"], chunksize=CHUNKSIZE):
-            sub = mchunk[(mchunk["game_id"].isin(gids_in)) &
-                         (mchunk["move"].isin(["O-O#", "O-O-O#"]))]
-            for _, row in sub.iterrows():
-                p = wm.get(row["game_id"]) if row["color"] == "white" else bm.get(row["game_id"])
-                if p:
-                    counts[str(p)] += 1
+    gids_s = gi.gids
+    for gid, color in castle_games.items():
+        idx = np.searchsorted(gids_s, np.array([gid], dtype="S14")[0])
+        if idx < len(gids_s) and gids_s[idx].decode() == gid:
+            counts[gi.player_at(idx, color)] += 1
+
     if not counts:
         return []
     top = max(counts.values())
@@ -1341,7 +1508,7 @@ def main() -> None:
     print("Q15")
     tot15, top15 = q15_non_queen_promos()
     ans[15] = f"Nem vezérre: {tot15} | Top 3: " + ", ".join(f"{p}:{c}" for p, c in top15)
-    print("Q23"); ans[23] = ", ".join(q23_castle_mates())
+    print("Q23"); ans[23] = ", ".join(q23_castle_mates(gi))
 
     # ---- Board simulation (filtered) ----
     print("\n=== Board simulation (filtered) ===")
