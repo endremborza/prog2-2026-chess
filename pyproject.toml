@@ -10,4 +10,5 @@ dependencies = [
     "polars>=1.40.1",
     "pytz>=2026.1.post1",
     "scikit-learn>=1.8.0",
+    "tqdm>=4.66",
 ]
