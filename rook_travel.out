@@ -1,0 +1,34 @@
+Traceback (most recent call last):
+  File "/Users/mategyula/Documents/RAJK/Prog2/sakk/bastya.py", line 426, in total_rook_travel
+    mv = chess_board.parse_san(san)
+  File "/Users/mategyula/Documents/RAJK/Prog2/sakk/.venv/lib/python3.13/site-packages/chess/__init__.py", line 3207, in parse_san
+    raise IllegalMoveError(f"illegal san: {san!r} in {self.fen()}")
+chess.IllegalMoveError: illegal san: 'Bb5+' in rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mategyula/Documents/RAJK/Prog2/sakk/bastya.py", line 521, in <module>
+    raise SystemExit(main(sys.argv))
+                     ~~~~^^^^^^^^^^
+  File "/Users/mategyula/Documents/RAJK/Prog2/sakk/bastya.py", line 513, in main
+    result = total_rook_travel(moves_path, batch_size=batch_size)
+  File "/Users/mategyula/Documents/RAJK/Prog2/sakk/bastya.py", line 475, in total_rook_travel
+    rook_distance_delta, en_passant_target = apply_move(
+                                             ~~~~~~~~~~^
+    	board,
+     ^^^^^^
+    ...<3 lines>...
+    	en_passant_target,
+     ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/mategyula/Documents/RAJK/Prog2/sakk/bastya.py", line 305, in apply_move
+    origin = find_origin(
+    	board,
+    ...<5 lines>...
+    	en_passant_target,
+    )
+  File "/Users/mategyula/Documents/RAJK/Prog2/sakk/bastya.py", line 237, in find_origin
+    raise ValueError(f"No origin found for {side} {piece} to {target}")
+ValueError: No origin found for white B to b5
