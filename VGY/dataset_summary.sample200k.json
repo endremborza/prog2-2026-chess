@@ -1,0 +1,2121 @@
+[
+  {
+    "file": "games.csv.gz",
+    "rows": 200001,
+    "columns": 23,
+    "variables": [
+      {
+        "column": "tournamentid",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 8,
+        "max_len": 8,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "7iv6zDwO",
+          "33LR4dZi",
+          "yLl4X7yk",
+          "3KBpoqX1",
+          "oa9AfC9H"
+        ],
+        "top_values": [
+          {
+            "value": "tib3i6Yy",
+            "count": 5100
+          },
+          {
+            "value": "HydPyr5d",
+            "count": 4522
+          },
+          {
+            "value": "z3c9epuE",
+            "count": 3870
+          },
+          {
+            "value": "4ee79ZKh",
+            "count": 2846
+          },
+          {
+            "value": "A6GUowPK",
+            "count": 2525
+          },
+          {
+            "value": "oFuZDEEy",
+            "count": 2492
+          },
+          {
+            "value": "QVQdAVtd",
+            "count": 2423
+          },
+          {
+            "value": "IpsfWNIk",
+            "count": 2395
+          },
+          {
+            "value": "2KLGw9hK",
+            "count": 2386
+          },
+          {
+            "value": "lPnOGVqE",
+            "count": 2368
+          }
+        ]
+      },
+      {
+        "column": "game_id",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 10,
+        "max_len": 13,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "7iv6zDwO-0",
+          "7iv6zDwO-1",
+          "7iv6zDwO-2",
+          "7iv6zDwO-3",
+          "7iv6zDwO-4"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "event",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 17,
+        "max_len": 31,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "\u22641700 SuperBlitz Arena",
+          "Hourly SuperBlitz Arena",
+          "Hourly Blitz Arena",
+          "\u22642000 Rapid Arena",
+          "Hourly Bullet Arena"
+        ],
+        "top_values": [
+          {
+            "value": "Hourly SuperBlitz Arena",
+            "count": 63258
+          },
+          {
+            "value": "Hourly Bullet Arena",
+            "count": 58042
+          },
+          {
+            "value": "Hourly Blitz Arena",
+            "count": 20890
+          },
+          {
+            "value": "\u22642000 SuperBlitz Arena",
+            "count": 12977
+          },
+          {
+            "value": "Daily SuperBlitz Arena",
+            "count": 9622
+          },
+          {
+            "value": "Eastern Bullet Arena",
+            "count": 7679
+          },
+          {
+            "value": "\u22642000 Rapid Arena",
+            "count": 7551
+          },
+          {
+            "value": "\u22642000 Blitz Arena",
+            "count": 6244
+          },
+          {
+            "value": "Daily Bullet Arena",
+            "count": 3870
+          },
+          {
+            "value": "\u22641700 Blitz Arena",
+            "count": 2572
+          }
+        ]
+      },
+      {
+        "column": "site",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 28,
+        "max_len": 28,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "https://lichess.org/Bqy0EAxX",
+          "https://lichess.org/yvp5kfrU",
+          "https://lichess.org/nMEP2h1W",
+          "https://lichess.org/iUhwAerr",
+          "https://lichess.org/CW9EHd7Z"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "date",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "date",
+        "type_counts": {
+          "date": 200000
+        },
+        "min_len": 10,
+        "max_len": 10,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "2026.04.14",
+          "2026.04.13",
+          "2026.04.12",
+          "2026.04.11"
+        ],
+        "top_values": [
+          {
+            "value": "2026.04.11",
+            "count": 69431
+          },
+          {
+            "value": "2026.04.12",
+            "count": 68510
+          },
+          {
+            "value": "2026.04.13",
+            "count": 47924
+          },
+          {
+            "value": "2026.04.14",
+            "count": 14135
+          }
+        ]
+      },
+      {
+        "column": "round",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 1,
+        "max_len": 1,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "-"
+        ],
+        "top_values": [
+          {
+            "value": "-",
+            "count": 200000
+          }
+        ]
+      },
+      {
+        "column": "white",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 3,
+        "max_len": 20,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "pedrovalentinc",
+          "meakash",
+          "BlackRockVanguard",
+          "SdoTdoU",
+          "splitdecisions"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "black",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 3,
+        "max_len": 20,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "Abu-suhan",
+          "bong_jovi",
+          "SdoTdoU",
+          "t1m2ch3",
+          "Johnjacoblariosa"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "result",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 3,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "0-1",
+          "1-0",
+          "1/2-1/2"
+        ],
+        "top_values": [
+          {
+            "value": "1-0",
+            "count": 99145
+          },
+          {
+            "value": "0-1",
+            "count": 94237
+          },
+          {
+            "value": "1/2-1/2",
+            "count": 6618
+          }
+        ]
+      },
+      {
+        "column": "utcdate",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "date",
+        "type_counts": {
+          "date": 200000
+        },
+        "min_len": 10,
+        "max_len": 10,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "2026.04.14",
+          "2026.04.13",
+          "2026.04.12",
+          "2026.04.11"
+        ],
+        "top_values": [
+          {
+            "value": "2026.04.11",
+            "count": 69431
+          },
+          {
+            "value": "2026.04.12",
+            "count": 68510
+          },
+          {
+            "value": "2026.04.13",
+            "count": 47924
+          },
+          {
+            "value": "2026.04.14",
+            "count": 14135
+          }
+        ]
+      },
+      {
+        "column": "utctime",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "time",
+        "type_counts": {
+          "time": 200000
+        },
+        "min_len": 8,
+        "max_len": 8,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "11:54:29",
+          "11:53:56",
+          "11:53:23",
+          "11:52:50",
+          "11:52:17"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "whiteelo",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 200000
+        },
+        "min_len": 3,
+        "max_len": 4,
+        "numeric_min": 408.0,
+        "numeric_max": 3034.0,
+        "examples": [
+          "1330",
+          "1578",
+          "1618",
+          "1631",
+          "1641"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "blackelo",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 200000
+        },
+        "min_len": 3,
+        "max_len": 4,
+        "numeric_min": 400.0,
+        "numeric_max": 3033.0,
+        "examples": [
+          "1657",
+          "1471",
+          "1636",
+          "1628",
+          "1632"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "whiteratingdiff",
+        "non_null_count": 199988,
+        "null_count": 12,
+        "missing_ratio": 6e-05,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 199988
+        },
+        "min_len": 2,
+        "max_len": 4,
+        "numeric_min": -160.0,
+        "numeric_max": 519.0,
+        "examples": [
+          "-2",
+          "+8",
+          "-5",
+          "+5",
+          "+12"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "blackratingdiff",
+        "non_null_count": 199988,
+        "null_count": 12,
+        "missing_ratio": 6e-05,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 199988
+        },
+        "min_len": 2,
+        "max_len": 4,
+        "numeric_min": -182.0,
+        "numeric_max": 368.0,
+        "examples": [
+          "+2",
+          "-4",
+          "+6",
+          "-6",
+          "-5"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "variant",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 8,
+        "max_len": 13,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "Standard",
+          "From Position"
+        ],
+        "top_values": [
+          {
+            "value": "Standard",
+            "count": 199248
+          },
+          {
+            "value": "From Position",
+            "count": 752
+          }
+        ]
+      },
+      {
+        "column": "timecontrol",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 4,
+        "max_len": 5,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "180+0",
+          "300+0",
+          "600+0",
+          "60+0",
+          "30+0"
+        ],
+        "top_values": [
+          {
+            "value": "180+0",
+            "count": 89006
+          },
+          {
+            "value": "60+0",
+            "count": 69591
+          },
+          {
+            "value": "300+0",
+            "count": 27811
+          },
+          {
+            "value": "600+0",
+            "count": 9172
+          },
+          {
+            "value": "30+0",
+            "count": 2525
+          },
+          {
+            "value": "180+2",
+            "count": 1895
+          }
+        ]
+      },
+      {
+        "column": "eco",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 1,
+        "max_len": 3,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "B12",
+          "A40",
+          "B01",
+          "C23",
+          "D30"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "termination",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 6,
+        "max_len": 21,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "Normal",
+          "Time forfeit",
+          "Abandoned",
+          "Insufficient material",
+          "Rules infraction"
+        ],
+        "top_values": [
+          {
+            "value": "Normal",
+            "count": 120987
+          },
+          {
+            "value": "Time forfeit",
+            "count": 74073
+          },
+          {
+            "value": "Abandoned",
+            "count": 4926
+          },
+          {
+            "value": "Insufficient material",
+            "count": 13
+          },
+          {
+            "value": "Rules infraction",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "column": "whitestart",
+        "non_null_count": 197104,
+        "null_count": 2896,
+        "missing_ratio": 0.01448,
+        "dominant_type": "time",
+        "type_counts": {
+          "time": 197104
+        },
+        "min_len": 7,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "0:03:00",
+          "0:01:30",
+          "0:05:00",
+          "0:02:30",
+          "0:10:00"
+        ],
+        "top_values": [
+          {
+            "value": "0:03:00",
+            "count": 79159
+          },
+          {
+            "value": "0:01:00",
+            "count": 63606
+          },
+          {
+            "value": "0:05:00",
+            "count": 24477
+          },
+          {
+            "value": "0:01:30",
+            "count": 10340
+          },
+          {
+            "value": "0:10:00",
+            "count": 8941
+          },
+          {
+            "value": "0:00:30",
+            "count": 7564
+          },
+          {
+            "value": "0:02:30",
+            "count": 2841
+          },
+          {
+            "value": "0:00:15",
+            "count": 176
+          }
+        ]
+      },
+      {
+        "column": "blackstart",
+        "non_null_count": 194694,
+        "null_count": 5306,
+        "missing_ratio": 0.02653,
+        "dominant_type": "time",
+        "type_counts": {
+          "time": 194694
+        },
+        "min_len": 7,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "0:03:00",
+          "0:01:30",
+          "0:05:00",
+          "0:02:30",
+          "0:10:00"
+        ],
+        "top_values": [
+          {
+            "value": "0:03:00",
+            "count": 78257
+          },
+          {
+            "value": "0:01:00",
+            "count": 63198
+          },
+          {
+            "value": "0:05:00",
+            "count": 24153
+          },
+          {
+            "value": "0:01:30",
+            "count": 10059
+          },
+          {
+            "value": "0:10:00",
+            "count": 8717
+          },
+          {
+            "value": "0:00:30",
+            "count": 7348
+          },
+          {
+            "value": "0:02:30",
+            "count": 2790
+          },
+          {
+            "value": "0:00:15",
+            "count": 172
+          }
+        ]
+      },
+      {
+        "column": "whitem1",
+        "non_null_count": 194621,
+        "null_count": 5379,
+        "missing_ratio": 0.026895,
+        "dominant_type": "time",
+        "type_counts": {
+          "time": 194621
+        },
+        "min_len": 7,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "0:02:57",
+          "0:03:00",
+          "0:02:59",
+          "0:02:58",
+          "0:02:55"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "blackm1",
+        "non_null_count": 194551,
+        "null_count": 5449,
+        "missing_ratio": 0.027245,
+        "dominant_type": "time",
+        "type_counts": {
+          "time": 194551
+        },
+        "min_len": 7,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "0:03:00",
+          "0:02:59",
+          "0:02:57",
+          "0:02:55",
+          "0:02:58"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      }
+    ]
+  },
+  {
+    "file": "moves.csv.gz",
+    "rows": 200001,
+    "columns": 5,
+    "variables": [
+      {
+        "column": "game_id",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 10,
+        "max_len": 13,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "7iv6zDwO-0",
+          "7iv6zDwO-1",
+          "7iv6zDwO-2",
+          "7iv6zDwO-3",
+          "7iv6zDwO-4"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "move_no",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 200000
+        },
+        "min_len": 1,
+        "max_len": 2,
+        "numeric_min": 1.0,
+        "numeric_max": 86.0,
+        "examples": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "top_values": [
+          {
+            "value": "1",
+            "count": 5702
+          },
+          {
+            "value": "2",
+            "count": 5649
+          },
+          {
+            "value": "3",
+            "count": 5645
+          },
+          {
+            "value": "4",
+            "count": 5639
+          },
+          {
+            "value": "5",
+            "count": 5630
+          },
+          {
+            "value": "6",
+            "count": 5618
+          },
+          {
+            "value": "7",
+            "count": 5610
+          },
+          {
+            "value": "8",
+            "count": 5591
+          },
+          {
+            "value": "9",
+            "count": 5568
+          },
+          {
+            "value": "10",
+            "count": 5543
+          }
+        ]
+      },
+      {
+        "column": "move",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 2,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "e4",
+          "c6",
+          "d4",
+          "d5",
+          "e5"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "clock",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "time",
+        "type_counts": {
+          "time": 200000
+        },
+        "min_len": 7,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "0:03:00",
+          "0:02:57",
+          "0:02:56",
+          "0:02:59",
+          "0:02:55"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "color",
+        "non_null_count": 200000,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 200000
+        },
+        "min_len": 5,
+        "max_len": 5,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "white",
+          "black"
+        ],
+        "top_values": [
+          {
+            "value": "white",
+            "count": 100773
+          },
+          {
+            "value": "black",
+            "count": 99227
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "file": "tournaments.csv.gz",
+    "rows": 53471,
+    "columns": 32,
+    "variables": [
+      {
+        "column": "id",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 8,
+        "max_len": 8,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "7iv6zDwO",
+          "yLl4X7yk",
+          "33LR4dZi",
+          "l4eaPx6a",
+          "oa9AfC9H"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "createdBy",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 5,
+        "max_len": 14,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "lichess",
+          "cormacobear",
+          "aaarmstark",
+          "fischyvishy",
+          "tbest"
+        ],
+        "top_values": [
+          {
+            "value": "lichess",
+            "count": 53408
+          },
+          {
+            "value": "aaarmstark",
+            "count": 39
+          },
+          {
+            "value": "cormacobear",
+            "count": 9
+          },
+          {
+            "value": "fischyvishy",
+            "count": 8
+          },
+          {
+            "value": "lukhas",
+            "count": 4
+          },
+          {
+            "value": "tbest",
+            "count": 2
+          },
+          {
+            "value": "konstantinos07",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "column": "system",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 5,
+        "max_len": 5,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "arena"
+        ],
+        "top_values": [
+          {
+            "value": "arena",
+            "count": 53471
+          }
+        ]
+      },
+      {
+        "column": "minutes",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 53471
+        },
+        "min_len": 2,
+        "max_len": 3,
+        "numeric_min": 27.0,
+        "numeric_max": 360.0,
+        "examples": [
+          "57",
+          "27",
+          "60",
+          "90",
+          "117"
+        ],
+        "top_values": [
+          {
+            "value": "57",
+            "count": 36599
+          },
+          {
+            "value": "27",
+            "count": 12740
+          },
+          {
+            "value": "60",
+            "count": 1919
+          },
+          {
+            "value": "90",
+            "count": 1320
+          },
+          {
+            "value": "117",
+            "count": 594
+          },
+          {
+            "value": "150",
+            "count": 193
+          },
+          {
+            "value": "120",
+            "count": 79
+          },
+          {
+            "value": "55",
+            "count": 21
+          },
+          {
+            "value": "110",
+            "count": 3
+          },
+          {
+            "value": "300",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "column": "rated",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "bool",
+        "type_counts": {
+          "bool": 53471
+        },
+        "min_len": 4,
+        "max_len": 5,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "True",
+          "False"
+        ],
+        "top_values": [
+          {
+            "value": "True",
+            "count": 53422
+          },
+          {
+            "value": "False",
+            "count": 49
+          }
+        ]
+      },
+      {
+        "column": "fullName",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 17,
+        "max_len": 40,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "\u22641700 SuperBlitz Arena",
+          "Hourly Blitz Arena",
+          "Hourly SuperBlitz Arena",
+          "Hourly Bullet Arena",
+          "\u22642000 Rapid Arena"
+        ],
+        "top_values": [
+          {
+            "value": "Hourly SuperBlitz Arena",
+            "count": 13730
+          },
+          {
+            "value": "Hourly Bullet Arena",
+            "count": 12734
+          },
+          {
+            "value": "Hourly Blitz Arena",
+            "count": 7541
+          },
+          {
+            "value": "\u22642000 SuperBlitz Arena",
+            "count": 4211
+          },
+          {
+            "value": "\u22642000 Blitz Arena",
+            "count": 3476
+          },
+          {
+            "value": "\u22642000 Rapid Arena",
+            "count": 3096
+          },
+          {
+            "value": "\u22641700 Blitz Arena",
+            "count": 1409
+          },
+          {
+            "value": "\u22641700 SuperBlitz Arena",
+            "count": 1050
+          },
+          {
+            "value": "\u22641700 Rapid Arena",
+            "count": 950
+          },
+          {
+            "value": "Eastern Bullet Arena",
+            "count": 861
+          }
+        ]
+      },
+      {
+        "column": "nbPlayers",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 53471
+        },
+        "min_len": 3,
+        "max_len": 4,
+        "numeric_min": 351.0,
+        "numeric_max": 3458.0,
+        "examples": [
+          "379",
+          "407",
+          "815",
+          "370",
+          "421"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "startsAt",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 53471
+        },
+        "min_len": 13,
+        "max_len": 13,
+        "numeric_min": 1694701898108.0,
+        "numeric_max": 1776164420000.0,
+        "examples": [
+          "1776164420000",
+          "1776164415000",
+          "1776164405000",
+          "1776162620000",
+          "1776160815000"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "finishesAt",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 53471
+        },
+        "min_len": 13,
+        "max_len": 13,
+        "numeric_min": 1694703518108.0,
+        "numeric_max": 1776167840000.0,
+        "examples": [
+          "1776167840000",
+          "1776167835000",
+          "1776167825000",
+          "1776164240000",
+          "1776164235000"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "hasMaxRating",
+        "non_null_count": 14295,
+        "null_count": 39176,
+        "missing_ratio": 0.732659,
+        "dominant_type": "bool",
+        "type_counts": {
+          "bool": 14295
+        },
+        "min_len": 4,
+        "max_len": 4,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "True"
+        ],
+        "top_values": [
+          {
+            "value": "True",
+            "count": 14295
+          }
+        ]
+      },
+      {
+        "column": "position",
+        "non_null_count": 1180,
+        "null_count": 52291,
+        "missing_ratio": 0.977932,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 1180
+        },
+        "min_len": 92,
+        "max_len": 278,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "{'eco': 'C01', 'name': 'French Defense: Exchange Variation', 'fen': 'rnbqkbnr/ppp2ppp/4p3/3P4/3P4/8/PPP2PPP/RNBQKBNR b KQkq -', 'url': 'https://lichess.org/opening/French_Defense_Exchange_Variation'}",
+          "{'eco': 'D06', 'name': \"Queen's Gambit\", 'fen': 'rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq -', 'url': 'https://lichess.org/opening/Queens_Gambit'}",
+          "{'eco': 'E41', 'name': 'Nimzo-Indian Defense: Rubinstein System, H\u00fcbner Variation', 'fen': 'r1bqk2r/pp3ppp/2nppn2/2p5/2PP4/2PBPN2/P4PPP/R1BQK2R w KQkq -', 'url': 'https://lichess.org/opening/Nimzo-Indian_Defense_Rubinstein_System_Hubner_Variation'}",
+          "{'eco': 'B08', 'name': 'Pirc Defense: Classical Variation', 'fen': 'rnbqkb1r/ppp1pp1p/3p1np1/8/3PP3/2N2N2/PPP2PPP/R1BQKB1R b KQkq -', 'url': 'https://lichess.org/opening/Pirc_Defense_Classical_Variation'}",
+          "{'eco': 'E00', 'name': 'Catalan Opening', 'fen': 'rnbqkb1r/pppp1ppp/4pn2/8/2PP4/6P1/PP2PP1P/RNBQKBNR b KQkq -', 'url': 'https://lichess.org/opening/Catalan_Opening'}"
+        ],
+        "top_values": [
+          {
+            "value": "{'eco': 'C27', 'name': 'Vienna Game: Frankenstein-Dracula Variation', 'fen': 'rnbqkb1r/pppp1ppp/8/4p3/2B1n3/2N5/PPPP1PPP/R1BQK1NR w KQkq -', 'url': 'https://lichess.org/opening/Vienna_Game_Frankenstein-Dracula_Variation'}",
+            "count": 24
+          },
+          {
+            "value": "{'eco': 'C50', 'name': 'Italian Game', 'fen': 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq -', 'url': 'https://lichess.org/opening/Italian_Game'}",
+            "count": 20
+          },
+          {
+            "value": "{'eco': 'C51', 'name': 'Italian Game: Evans Gambit', 'fen': 'r1bqk1nr/pppp1ppp/2n5/2b1p3/1PB1P3/5N2/P1PP1PPP/RNBQK2R b KQkq -', 'url': 'https://lichess.org/opening/Italian_Game_Evans_Gambit'}",
+            "count": 15
+          },
+          {
+            "value": "{'eco': 'B10', 'name': 'Caro-Kann Defense', 'fen': 'rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -', 'url': 'https://lichess.org/opening/Caro-Kann_Defense'}",
+            "count": 15
+          },
+          {
+            "value": "{'eco': 'B06', 'name': 'Modern Defense', 'fen': 'rnbqkbnr/pppppp1p/6p1/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -', 'url': 'https://lichess.org/opening/Modern_Defense'}",
+            "count": 15
+          },
+          {
+            "value": "{'eco': 'A03', 'name': 'Bird Opening: Dutch Variation', 'fen': 'rnbqkbnr/ppp1pppp/8/3p4/5P2/8/PPPPP1PP/RNBQKBNR w KQkq -', 'url': 'https://lichess.org/opening/Bird_Opening_Dutch_Variation'}",
+            "count": 15
+          },
+          {
+            "value": "{'eco': 'C60', 'name': 'Ruy Lopez', 'fen': 'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq -', 'url': 'https://lichess.org/opening/Ruy_Lopez'}",
+            "count": 14
+          },
+          {
+            "value": "{'eco': 'C10', 'name': 'French Defense: Rubinstein Variation', 'fen': 'rnbqkbnr/ppp2ppp/4p3/8/3Pp3/2N5/PPP2PPP/R1BQKBNR w KQkq -', 'url': 'https://lichess.org/opening/French_Defense_Rubinstein_Variation'}",
+            "count": 14
+          },
+          {
+            "value": "{'eco': 'B20', 'name': 'Sicilian Defense', 'fen': 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq -', 'url': 'https://lichess.org/opening/Sicilian_Defense'}",
+            "count": 13
+          },
+          {
+            "value": "{'eco': 'C50', 'name': 'Italian Game: Giuoco Piano', 'fen': 'r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq -', 'url': 'https://lichess.org/opening/Italian_Game_Giuoco_Piano'}",
+            "count": 13
+          }
+        ]
+      },
+      {
+        "column": "clock__limit",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 53471
+        },
+        "min_len": 2,
+        "max_len": 4,
+        "numeric_min": 15.0,
+        "numeric_max": 1200.0,
+        "examples": [
+          "180",
+          "300",
+          "60",
+          "600",
+          "30"
+        ],
+        "top_values": [
+          {
+            "value": "180",
+            "count": 22375
+          },
+          {
+            "value": "60",
+            "count": 14260
+          },
+          {
+            "value": "300",
+            "count": 11463
+          },
+          {
+            "value": "600",
+            "count": 4883
+          },
+          {
+            "value": "30",
+            "count": 482
+          },
+          {
+            "value": "15",
+            "count": 5
+          },
+          {
+            "value": "1200",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "column": "clock__increment",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 53471
+        },
+        "min_len": 1,
+        "max_len": 2,
+        "numeric_min": 0.0,
+        "numeric_max": 10.0,
+        "examples": [
+          "0",
+          "2",
+          "1",
+          "10"
+        ],
+        "top_values": [
+          {
+            "value": "0",
+            "count": 52369
+          },
+          {
+            "value": "2",
+            "count": 1097
+          },
+          {
+            "value": "10",
+            "count": 3
+          },
+          {
+            "value": "1",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "column": "variant__key",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 8,
+        "max_len": 8,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "standard"
+        ],
+        "top_values": [
+          {
+            "value": "standard",
+            "count": 53471
+          }
+        ]
+      },
+      {
+        "column": "variant__short",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 3,
+        "max_len": 3,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "Std"
+        ],
+        "top_values": [
+          {
+            "value": "Std",
+            "count": 53471
+          }
+        ]
+      },
+      {
+        "column": "variant__name",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 8,
+        "max_len": 8,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "Standard"
+        ],
+        "top_values": [
+          {
+            "value": "Standard",
+            "count": 53471
+          }
+        ]
+      },
+      {
+        "column": "perf__key",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 5,
+        "max_len": 11,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "blitz",
+          "bullet",
+          "rapid",
+          "ultraBullet",
+          "classical"
+        ],
+        "top_values": [
+          {
+            "value": "blitz",
+            "count": 33838
+          },
+          {
+            "value": "bullet",
+            "count": 14742
+          },
+          {
+            "value": "rapid",
+            "count": 4883
+          },
+          {
+            "value": "ultraBullet",
+            "count": 5
+          },
+          {
+            "value": "classical",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "column": "perf__name",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 5,
+        "max_len": 11,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "Blitz",
+          "Bullet",
+          "Rapid",
+          "UltraBullet",
+          "Classical"
+        ],
+        "top_values": [
+          {
+            "value": "Blitz",
+            "count": 33838
+          },
+          {
+            "value": "Bullet",
+            "count": 14742
+          },
+          {
+            "value": "Rapid",
+            "count": 4883
+          },
+          {
+            "value": "UltraBullet",
+            "count": 5
+          },
+          {
+            "value": "Classical",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "column": "perf__position",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "int",
+        "type_counts": {
+          "int": 53471
+        },
+        "min_len": 1,
+        "max_len": 1,
+        "numeric_min": 0.0,
+        "numeric_max": 4.0,
+        "examples": [
+          "1",
+          "0",
+          "2",
+          "4",
+          "3"
+        ],
+        "top_values": [
+          {
+            "value": "1",
+            "count": 33838
+          },
+          {
+            "value": "0",
+            "count": 14742
+          },
+          {
+            "value": "2",
+            "count": 4883
+          },
+          {
+            "value": "4",
+            "count": 5
+          },
+          {
+            "value": "3",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "column": "perf__icon",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 1,
+        "max_len": 1,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          ")",
+          "T",
+          "#",
+          "{",
+          "+"
+        ],
+        "top_values": [
+          {
+            "value": ")",
+            "count": 33838
+          },
+          {
+            "value": "T",
+            "count": 14742
+          },
+          {
+            "value": "#",
+            "count": 4883
+          },
+          {
+            "value": "{",
+            "count": 5
+          },
+          {
+            "value": "+",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "column": "minRating__rating",
+        "non_null_count": 60,
+        "null_count": 53411,
+        "missing_ratio": 0.998878,
+        "dominant_type": "float",
+        "type_counts": {
+          "float": 60
+        },
+        "min_len": 6,
+        "max_len": 6,
+        "numeric_min": 2200.0,
+        "numeric_max": 2200.0,
+        "examples": [
+          "2200.0"
+        ],
+        "top_values": [
+          {
+            "value": "2200.0",
+            "count": 60
+          }
+        ]
+      },
+      {
+        "column": "maxRating__rating",
+        "non_null_count": 14295,
+        "null_count": 39176,
+        "missing_ratio": 0.732659,
+        "dominant_type": "float",
+        "type_counts": {
+          "float": 14295
+        },
+        "min_len": 6,
+        "max_len": 6,
+        "numeric_min": 1500.0,
+        "numeric_max": 2000.0,
+        "examples": [
+          "1700.0",
+          "2000.0",
+          "1500.0"
+        ],
+        "top_values": [
+          {
+            "value": "2000.0",
+            "count": 10789
+          },
+          {
+            "value": "1700.0",
+            "count": 3409
+          },
+          {
+            "value": "1500.0",
+            "count": 97
+          }
+        ]
+      },
+      {
+        "column": "minRatedGames__nb",
+        "non_null_count": 53417,
+        "null_count": 54,
+        "missing_ratio": 0.00101,
+        "dominant_type": "float",
+        "type_counts": {
+          "float": 53417
+        },
+        "min_len": 3,
+        "max_len": 4,
+        "numeric_min": 5.0,
+        "numeric_max": 30.0,
+        "examples": [
+          "20.0",
+          "15.0",
+          "30.0",
+          "10.0",
+          "5.0"
+        ],
+        "top_values": [
+          {
+            "value": "20.0",
+            "count": 28971
+          },
+          {
+            "value": "15.0",
+            "count": 23577
+          },
+          {
+            "value": "10.0",
+            "count": 788
+          },
+          {
+            "value": "30.0",
+            "count": 78
+          },
+          {
+            "value": "5.0",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "column": "schedule__freq",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 5,
+        "max_len": 7,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "hourly",
+          "eastern",
+          "daily",
+          "weekend",
+          "unique"
+        ],
+        "top_values": [
+          {
+            "value": "hourly",
+            "count": 49933
+          },
+          {
+            "value": "daily",
+            "count": 1828
+          },
+          {
+            "value": "eastern",
+            "count": 1551
+          },
+          {
+            "value": "unique",
+            "count": 73
+          },
+          {
+            "value": "weekend",
+            "count": 60
+          },
+          {
+            "value": "weekly",
+            "count": 22
+          },
+          {
+            "value": "monthly",
+            "count": 4
+          }
+        ]
+      },
+      {
+        "column": "schedule__speed",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 5,
+        "max_len": 11,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "superBlitz",
+          "blitz",
+          "bullet",
+          "rapid",
+          "hyperBullet"
+        ],
+        "top_values": [
+          {
+            "value": "superBlitz",
+            "count": 21260
+          },
+          {
+            "value": "bullet",
+            "count": 14260
+          },
+          {
+            "value": "blitz",
+            "count": 12578
+          },
+          {
+            "value": "rapid",
+            "count": 4883
+          },
+          {
+            "value": "hyperBullet",
+            "count": 482
+          },
+          {
+            "value": "ultraBullet",
+            "count": 5
+          },
+          {
+            "value": "classical",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "column": "winner__name",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 3,
+        "max_len": 20,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "jawanijaneman",
+          "IndistictDragon",
+          "RhenzRheann_Auza98",
+          "SlimWilliam",
+          "Academia_Es"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "winner__flair",
+        "non_null_count": 7435,
+        "null_count": 46036,
+        "missing_ratio": 0.860953,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 7435
+        },
+        "min_len": 9,
+        "max_len": 74,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "nature.fire",
+          "food-drink.clinking-beer-mugs",
+          "people.ninja-light-skin-tone",
+          "people.troll",
+          "smileys.alien"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "winner__id",
+        "non_null_count": 53471,
+        "null_count": 0,
+        "missing_ratio": 0.0,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 53471
+        },
+        "min_len": 3,
+        "max_len": 20,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "jawanijaneman",
+          "indistictdragon",
+          "rhenzrheann_auza98",
+          "slimwilliam",
+          "academia_es"
+        ],
+        "top_values": "high_cardinality_not_tracked"
+      },
+      {
+        "column": "winner__title",
+        "non_null_count": 5254,
+        "null_count": 48217,
+        "missing_ratio": 0.901741,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 5254
+        },
+        "min_len": 2,
+        "max_len": 3,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "IM",
+          "FM",
+          "CM",
+          "NM",
+          "GM"
+        ],
+        "top_values": [
+          {
+            "value": "IM",
+            "count": 2079
+          },
+          {
+            "value": "CM",
+            "count": 1300
+          },
+          {
+            "value": "FM",
+            "count": 1181
+          },
+          {
+            "value": "GM",
+            "count": 337
+          },
+          {
+            "value": "NM",
+            "count": 302
+          },
+          {
+            "value": "WFM",
+            "count": 28
+          },
+          {
+            "value": "LM",
+            "count": 10
+          },
+          {
+            "value": "WIM",
+            "count": 9
+          },
+          {
+            "value": "WGM",
+            "count": 6
+          },
+          {
+            "value": "WCM",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "column": "winner__patron",
+        "non_null_count": 2667,
+        "null_count": 50804,
+        "missing_ratio": 0.950122,
+        "dominant_type": "bool",
+        "type_counts": {
+          "bool": 2667
+        },
+        "min_len": 4,
+        "max_len": 4,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "True"
+        ],
+        "top_values": [
+          {
+            "value": "True",
+            "count": 2667
+          }
+        ]
+      },
+      {
+        "column": "winner__patronColor",
+        "non_null_count": 1028,
+        "null_count": 52443,
+        "missing_ratio": 0.980775,
+        "dominant_type": "float",
+        "type_counts": {
+          "float": 1028
+        },
+        "min_len": 3,
+        "max_len": 4,
+        "numeric_min": 1.0,
+        "numeric_max": 10.0,
+        "examples": [
+          "6.0",
+          "2.0",
+          "10.0",
+          "9.0",
+          "7.0"
+        ],
+        "top_values": [
+          {
+            "value": "10.0",
+            "count": 610
+          },
+          {
+            "value": "6.0",
+            "count": 268
+          },
+          {
+            "value": "1.0",
+            "count": 41
+          },
+          {
+            "value": "3.0",
+            "count": 34
+          },
+          {
+            "value": "2.0",
+            "count": 23
+          },
+          {
+            "value": "7.0",
+            "count": 19
+          },
+          {
+            "value": "9.0",
+            "count": 11
+          },
+          {
+            "value": "8.0",
+            "count": 9
+          },
+          {
+            "value": "5.0",
+            "count": 7
+          },
+          {
+            "value": "4.0",
+            "count": 6
+          }
+        ]
+      },
+      {
+        "column": "winner__patronTier",
+        "non_null_count": 46,
+        "null_count": 53425,
+        "missing_ratio": 0.99914,
+        "dominant_type": "text",
+        "type_counts": {
+          "text": 46
+        },
+        "min_len": 6,
+        "max_len": 8,
+        "numeric_min": null,
+        "numeric_max": null,
+        "examples": [
+          "years5",
+          "lifetime",
+          "months1",
+          "years1",
+          "years3"
+        ],
+        "top_values": [
+          {
+            "value": "lifetime",
+            "count": 14
+          },
+          {
+            "value": "years1",
+            "count": 14
+          },
+          {
+            "value": "months1",
+            "count": 10
+          },
+          {
+            "value": "years5",
+            "count": 7
+          },
+          {
+            "value": "years3",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  }
+]
