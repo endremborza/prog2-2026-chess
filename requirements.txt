@@ -1,0 +1,6 @@
+polars
+numpy
+python-chess
+pytz
+scikit-learn
+tqdm
